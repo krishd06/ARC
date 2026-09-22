@@ -1,0 +1,151 @@
+train_number,train_name,train_type,days_of_run,seq,station_code,station_name,distance_from_origin_km,arrival,departure,halt_min
+12123,Deccan Queen,Superfast Express,Daily,1,CSTM,Mumbai CSMT,0,--,07:15,0
+12123,Deccan Queen,Superfast Express,Daily,2,DR,Dadar,9,07:22,07:25,3
+12123,Deccan Queen,Superfast Express,Daily,3,KYN,Kalyan Jn,54,07:55,08:00,5
+12123,Deccan Queen,Superfast Express,Daily,4,KJT,Karjat,100,08:30,08:40,10
+12123,Deccan Queen,Superfast Express,Daily,5,LNL,Lonavala,128,08:51,08:56,5
+12123,Deccan Queen,Superfast Express,Daily,6,PUNE,Pune Jn,192,09:39,09:41,2
+12123,Deccan Queen,Superfast Express,Daily,7,DD,Daund Jn,235,10:11,10:14,3
+12123,Deccan Queen,Superfast Express,Daily,8,KWV,Kurduwadi,320,11:15,11:20,5
+12123,Deccan Queen,Superfast Express,Daily,9,SUR,Solapur,456,12:57,--,0
+12124,Deccan Queen (Return),Superfast Express,Daily,1,SUR,Solapur,0,--,18:35,0
+12124,Deccan Queen (Return),Superfast Express,Daily,2,KWV,Kurduwadi,136,20:17,20:22,5
+12124,Deccan Queen (Return),Superfast Express,Daily,3,DD,Daund Jn,221,21:21,21:26,5
+12124,Deccan Queen (Return),Superfast Express,Daily,4,PUNE,Pune Jn,264,21:53,21:56,3
+12124,Deccan Queen (Return),Superfast Express,Daily,5,LNL,Lonavala,328,22:41,22:44,3
+12124,Deccan Queen (Return),Superfast Express,Daily,6,KJT,Karjat,356,23:02,23:07,5
+12124,Deccan Queen (Return),Superfast Express,Daily,7,KYN,Kalyan Jn,402,23:37,23:39,2
+12124,Deccan Queen (Return),Superfast Express,Daily,8,DR,Dadar,447,00:10,00:12,2
+12124,Deccan Queen (Return),Superfast Express,Daily,9,CSTM,Mumbai CSMT,456,00:17,--,0
+11007,Deccan Express,Express,Daily,1,CSTM,Mumbai CSMT,0,--,06:40,0
+11007,Deccan Express,Express,Daily,2,DR,Dadar,9,06:48,06:53,5
+11007,Deccan Express,Express,Daily,3,KYN,Kalyan Jn,54,07:30,07:32,2
+11007,Deccan Express,Express,Daily,4,KJT,Karjat,100,08:12,08:17,5
+11007,Deccan Express,Express,Daily,5,LNL,Lonavala,128,08:38,08:43,5
+11007,Deccan Express,Express,Daily,6,PUNE,Pune Jn,192,09:37,09:47,10
+11007,Deccan Express,Express,Daily,7,DD,Daund Jn,235,10:17,10:22,5
+11007,Deccan Express,Express,Daily,8,KWV,Kurduwadi,320,11:35,11:37,2
+11007,Deccan Express,Express,Daily,9,SUR,Solapur,456,13:41,--,0
+11041,Maharashtra Express,Express,Daily,1,CSTM,Mumbai CSMT,0,--,21:15,0
+11041,Maharashtra Express,Express,Daily,2,DR,Dadar,9,21:24,21:29,5
+11041,Maharashtra Express,Express,Daily,3,KYN,Kalyan Jn,54,22:09,22:19,10
+11041,Maharashtra Express,Express,Daily,4,KJT,Karjat,100,22:55,22:57,2
+11041,Maharashtra Express,Express,Daily,5,LNL,Lonavala,128,23:23,23:28,5
+11041,Maharashtra Express,Express,Daily,6,PUNE,Pune Jn,192,00:27,00:29,2
+11041,Maharashtra Express,Express,Daily,7,DD,Daund Jn,235,01:10,01:20,10
+11041,Maharashtra Express,Express,Daily,8,KWV,Kurduwadi,320,02:35,02:40,5
+11041,Maharashtra Express,Express,Daily,9,SUR,Solapur,456,04:51,--,0
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,1,CSTM,Mumbai CSMT,0,--,05:55,0
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,2,DR,Dadar,9,06:01,06:11,10
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,3,KYN,Kalyan Jn,54,06:33,06:38,5
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,4,KJT,Karjat,100,07:06,07:16,10
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,5,LNL,Lonavala,128,07:25,07:28,3
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,6,PUNE,Pune Jn,192,08:11,08:13,2
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,7,DD,Daund Jn,235,08:41,08:43,2
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,8,KWV,Kurduwadi,320,09:41,09:44,3
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Daily,9,SUR,Solapur,456,11:17,--,0
+17032,Solapur-CSMT Express,Express,Daily except Tue,1,SUR,Solapur,0,--,20:10,0
+17032,Solapur-CSMT Express,Express,Daily except Tue,2,KWV,Kurduwadi,136,22:26,22:31,5
+17032,Solapur-CSMT Express,Express,Daily except Tue,3,DD,Daund Jn,221,23:51,23:53,2
+17032,Solapur-CSMT Express,Express,Daily except Tue,4,PUNE,Pune Jn,264,00:34,00:37,3
+17032,Solapur-CSMT Express,Express,Daily except Tue,5,LNL,Lonavala,328,01:38,01:40,2
+17032,Solapur-CSMT Express,Express,Daily except Tue,6,KJT,Karjat,356,02:06,02:11,5
+17032,Solapur-CSMT Express,Express,Daily except Tue,7,KYN,Kalyan Jn,402,02:52,02:57,5
+17032,Solapur-CSMT Express,Express,Daily except Tue,8,DR,Dadar,447,03:37,03:42,5
+17032,Solapur-CSMT Express,Express,Daily except Tue,9,CSTM,Mumbai CSMT,456,03:46,--,0
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,1,CSTM,Mumbai CSMT,0,--,22:20,0
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,2,KYN,Kalyan Jn,54,23:06,23:11,5
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,3,KSRA,Kasara,120,00:03,00:06,3
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,4,IGP,Igatpuri,132,00:13,00:18,5
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,5,NK,Nashik Road,187,01:00,01:05,5
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,6,MMR,Manmad Jn,262,02:05,02:08,3
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,7,BSL,Bhusawal Jn,417,04:17,04:22,5
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,8,AK,Akola Jn,549,06:11,06:13,2
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,9,BD,Badnera Jn,617,07:09,07:19,10
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,10,WR,Wardha Jn,780,09:29,09:32,3
+12127,Pune-Nagpur Intercity,Superfast Express,Daily,11,NGP,Nagpur Jn,837,10:17,--,0
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,1,CSTM,Mumbai CSMT,0,--,23:00,0
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,2,KYN,Kalyan Jn,54,23:43,23:53,10
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,3,KSRA,Kasara,120,00:36,00:39,3
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,4,IGP,Igatpuri,132,00:46,00:49,3
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,5,NK,Nashik Road,187,01:30,01:35,5
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,6,MMR,Manmad Jn,262,02:30,02:35,5
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,7,BSL,Bhusawal Jn,417,04:34,04:39,5
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,8,AK,Akola Jn,549,06:19,06:29,10
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,9,BD,Badnera Jn,617,07:14,07:17,3
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,10,WR,Wardha Jn,780,09:24,09:29,5
+12141,Mumbai-Nagpur Express,Superfast Express,Daily,11,NGP,Nagpur Jn,837,10:10,--,0
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,1,NGP,Nagpur Jn,0,--,17:40,0
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,2,WR,Wardha Jn,57,18:26,18:28,2
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,3,BD,Badnera Jn,220,20:36,20:39,3
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,4,AK,Akola Jn,288,21:30,21:32,2
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,5,BSL,Bhusawal Jn,420,23:16,23:21,5
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,6,MMR,Manmad Jn,575,01:20,01:25,5
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,7,NK,Nashik Road,650,02:20,02:25,5
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,8,IGP,Igatpuri,705,03:04,03:06,2
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,9,KSRA,Kasara,717,03:14,03:17,3
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,10,KYN,Kalyan Jn,783,04:06,04:16,10
+12142,Nagpur-Mumbai Express,Superfast Express,Daily,11,CSTM,Mumbai CSMT,837,04:50,--,0
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",1,CSTM,Mumbai CSMT,0,--,14:10,0
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",2,KYN,Kalyan Jn,54,15:02,15:07,5
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",3,KSRA,Kasara,120,16:06,16:09,3
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",4,IGP,Igatpuri,132,16:18,16:23,5
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",5,NK,Nashik Road,187,17:11,17:16,5
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",6,MMR,Manmad Jn,262,18:24,18:29,5
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",7,BSL,Bhusawal Jn,417,20:54,20:57,3
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",8,AK,Akola Jn,549,23:01,23:06,5
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",9,BD,Badnera Jn,617,00:07,00:10,3
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",10,WR,Wardha Jn,780,02:45,02:48,3
+11039,Maharashtra Sampark Kranti,Express,"Mon,Wed,Fri",11,NGP,Nagpur Jn,837,03:40,--,0
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,1,CSTM,Mumbai CSMT,0,--,05:30,0
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,2,KYN,Kalyan Jn,54,06:51,07:01,10
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,3,KSRA,Kasara,120,08:30,08:40,10
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,4,IGP,Igatpuri,132,08:48,08:53,5
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,5,NK,Nashik Road,187,10:10,10:20,10
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,6,MMR,Manmad Jn,262,12:03,12:08,5
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,7,BSL,Bhusawal Jn,417,15:56,16:06,10
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,8,AK,Akola Jn,549,19:14,19:19,5
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,9,BD,Badnera Jn,617,20:56,21:01,5
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,10,WR,Wardha Jn,780,01:00,01:03,3
+51139,Bhusawal-Nagpur Passenger,Passenger,Daily,11,NGP,Nagpur Jn,837,02:26,--,0
+22945,Mumbai-Kolhapur Superfast,Superfast Express,Daily,1,PUNE,Pune Jn,0,--,23:40,0
+22945,Mumbai-Kolhapur Superfast,Superfast Express,Daily,2,STR,Satara,110,01:17,01:20,3
+22945,Mumbai-Kolhapur Superfast,Superfast Express,Daily,3,KRD,Karad,160,02:01,02:11,10
+22945,Mumbai-Kolhapur Superfast,Superfast Express,Daily,4,SLI,Sangli,230,03:03,03:08,5
+22945,Mumbai-Kolhapur Superfast,Superfast Express,Daily,5,MRJ,Miraj Jn,240,03:12,03:14,2
+22945,Mumbai-Kolhapur Superfast,Superfast Express,Daily,6,KOP,Kolhapur,275,03:43,--,0
+17411,Kolhapur-Pune Express,Express,Daily,1,KOP,Kolhapur,0,--,06:20,0
+17411,Kolhapur-Pune Express,Express,Daily,2,MRJ,Miraj Jn,35,06:58,07:00,2
+17411,Kolhapur-Pune Express,Express,Daily,3,SLI,Sangli,45,07:09,07:11,2
+17411,Kolhapur-Pune Express,Express,Daily,4,KRD,Karad,115,08:25,08:28,3
+17411,Kolhapur-Pune Express,Express,Daily,5,STR,Satara,165,09:20,09:23,3
+17411,Kolhapur-Pune Express,Express,Daily,6,PUNE,Pune Jn,275,11:20,--,0
+50101,Pune-Daund Passenger,Passenger,Daily,1,CSTM,Mumbai CSMT,0,--,09:05,0
+50101,Pune-Daund Passenger,Passenger,Daily,2,DR,Dadar,9,09:19,09:24,5
+50101,Pune-Daund Passenger,Passenger,Daily,3,KYN,Kalyan Jn,54,10:30,10:40,10
+50101,Pune-Daund Passenger,Passenger,Daily,4,KJT,Karjat,100,11:43,11:45,2
+50101,Pune-Daund Passenger,Passenger,Daily,5,LNL,Lonavala,128,12:27,12:32,5
+50101,Pune-Daund Passenger,Passenger,Daily,6,PUNE,Pune Jn,192,14:08,14:13,5
+50101,Pune-Daund Passenger,Passenger,Daily,7,DD,Daund Jn,235,15:16,15:26,10
+50101,Pune-Daund Passenger,Passenger,Daily,8,KWV,Kurduwadi,320,17:30,17:35,5
+50101,Pune-Daund Passenger,Passenger,Daily,9,SUR,Solapur,456,21:05,--,0
+70123,Mumbai-Pune Freight (Container),Freight,Daily,1,CSTM,Mumbai CSMT,0,--,02:30,0
+70123,Mumbai-Pune Freight (Container),Freight,Daily,2,DR,Dadar,9,02:42,02:52,10
+70123,Mumbai-Pune Freight (Container),Freight,Daily,3,KYN,Kalyan Jn,54,03:42,03:47,5
+70123,Mumbai-Pune Freight (Container),Freight,Daily,4,KJT,Karjat,100,04:43,04:53,10
+70123,Mumbai-Pune Freight (Container),Freight,Daily,5,LNL,Lonavala,128,05:21,05:23,2
+70123,Mumbai-Pune Freight (Container),Freight,Daily,6,PUNE,Pune Jn,192,06:46,06:48,2
+70123,Mumbai-Pune Freight (Container),Freight,Daily,7,DD,Daund Jn,235,07:43,07:53,10
+70123,Mumbai-Pune Freight (Container),Freight,Daily,8,KWV,Kurduwadi,320,09:37,09:42,5
+70123,Mumbai-Pune Freight (Container),Freight,Daily,9,SUR,Solapur,456,12:38,--,0
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,1,CSTM,Mumbai CSMT,0,--,17:00,0
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,2,KYN,Kalyan Jn,54,18:17,18:22,5
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,3,KSRA,Kasara,120,19:51,19:53,2
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,4,IGP,Igatpuri,132,20:09,20:14,5
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,5,NK,Nashik Road,187,21:27,21:32,5
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,6,MMR,Manmad Jn,262,23:14,23:17,3
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,7,BSL,Bhusawal Jn,417,02:56,03:01,5
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,8,AK,Akola Jn,549,06:04,06:06,2
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,9,BD,Badnera Jn,617,07:41,07:46,5
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,10,WR,Wardha Jn,780,11:34,11:44,10
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Daily,11,NGP,Nagpur Jn,837,12:56,--,0

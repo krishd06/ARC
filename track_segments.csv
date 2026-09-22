@@ -1,0 +1,24 @@
+track_id,corridor,from_station,to_station,from_km,to_km,length_km,num_lines,electrified,max_speed_kmph,terrain
+T001,Mumbai-Pune-Solapur,CSTM,DR,0,9,9,2,True,100,plain
+T002,Mumbai-Pune-Solapur,DR,KYN,9,54,45,2,True,100,plain
+T003,Mumbai-Pune-Solapur,KYN,KJT,54,100,46,2,True,60,ghat/hilly
+T004,Mumbai-Pune-Solapur,KJT,LNL,100,128,28,2,True,60,ghat/hilly
+T005,Mumbai-Pune-Solapur,LNL,PUNE,128,192,64,2,True,60,ghat/hilly
+T006,Mumbai-Pune-Solapur,PUNE,DD,192,235,43,2,True,120,plain
+T007,Mumbai-Pune-Solapur,DD,KWV,235,320,85,2,True,110,plain
+T008,Mumbai-Pune-Solapur,KWV,SUR,320,456,136,2,True,110,plain
+T009,Mumbai-Nagpur Trunk,CSTM,KYN,0,54,54,2,True,110,plain
+T010,Mumbai-Nagpur Trunk,KYN,KSRA,54,120,66,2,True,60,ghat/hilly
+T011,Mumbai-Nagpur Trunk,KSRA,IGP,120,132,12,2,True,60,ghat/hilly
+T012,Mumbai-Nagpur Trunk,IGP,NK,132,187,55,2,True,60,ghat/hilly
+T013,Mumbai-Nagpur Trunk,NK,MMR,187,262,75,2,True,100,plain
+T014,Mumbai-Nagpur Trunk,MMR,BSL,262,417,155,2,True,100,plain
+T015,Mumbai-Nagpur Trunk,BSL,AK,417,549,132,2,True,130,plain
+T016,Mumbai-Nagpur Trunk,AK,BD,549,617,68,2,True,100,plain
+T017,Mumbai-Nagpur Trunk,BD,WR,617,780,163,2,True,100,plain
+T018,Mumbai-Nagpur Trunk,WR,NGP,780,837,57,2,True,100,plain
+T019,Pune-Kolhapur,PUNE,STR,0,110,110,2,True,110,plain
+T020,Pune-Kolhapur,STR,KRD,110,160,50,2,True,110,plain
+T021,Pune-Kolhapur,KRD,SLI,160,230,70,2,True,100,plain
+T022,Pune-Kolhapur,SLI,MRJ,230,240,10,2,True,110,plain
+T023,Pune-Kolhapur,MRJ,KOP,240,275,35,2,True,130,plain

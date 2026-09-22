@@ -1,0 +1,17 @@
+train_number,train_name,train_type,corridor,days_of_run,avg_speed_kmph
+12123,Deccan Queen,Superfast Express,Mumbai-Pune-Solapur,Daily,80
+12124,Deccan Queen (Return),Superfast Express,Mumbai-Pune-Solapur,Daily,80
+11007,Deccan Express,Express,Mumbai-Pune-Solapur,Daily,65
+11041,Maharashtra Express,Express,Mumbai-Pune-Solapur,Daily,60
+12071,Pune-Mumbai Jan Shatabdi,Superfast Express,Mumbai-Pune-Solapur,Daily,85
+17032,Solapur-CSMT Express,Express,Mumbai-Pune-Solapur,Daily except Tue,60
+12127,Pune-Nagpur Intercity,Superfast Express,Mumbai-Nagpur Trunk,Daily,70
+12141,Mumbai-Nagpur Express,Superfast Express,Mumbai-Nagpur Trunk,Daily,75
+12142,Nagpur-Mumbai Express,Superfast Express,Mumbai-Nagpur Trunk,Daily,75
+11039,Maharashtra Sampark Kranti,Express,Mumbai-Nagpur Trunk,"Mon,Wed,Fri",62
+51139,Bhusawal-Nagpur Passenger,Passenger,Mumbai-Nagpur Trunk,Daily,40
+22945,Mumbai-Kolhapur Superfast,Superfast Express,Pune-Kolhapur,Daily,68
+17411,Kolhapur-Pune Express,Express,Pune-Kolhapur,Daily,55
+50101,Pune-Daund Passenger,Passenger,Mumbai-Pune-Solapur,Daily,38
+70123,Mumbai-Pune Freight (Container),Freight,Mumbai-Pune-Solapur,Daily,45
+60455,Bhusawal-Kalyan EMU Local,EMU Passenger,Mumbai-Nagpur Trunk,Daily,42

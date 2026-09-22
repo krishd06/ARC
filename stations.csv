@@ -1,0 +1,24 @@
+station_code,station_name,division,line,latitude,longitude
+CSTM,Mumbai CSMT,Mumbai CR,Mumbai-Pune-Solapur / Mumbai-Nagpur trunk,18.9633,72.8352
+DR,Dadar,Mumbai CR,Mumbai-Pune-Solapur,19.0186,72.844
+KYN,Kalyan Jn,Mumbai CR,Mumbai-Pune-Solapur / Mumbai-Nagpur trunk,19.2437,73.1355
+KJT,Karjat,Mumbai CR,Mumbai-Pune-Solapur (ghat),18.9107,73.3237
+LNL,Lonavala,Pune,Mumbai-Pune-Solapur (ghat),18.75,73.4064
+PUNE,Pune Jn,Pune,Mumbai-Pune-Solapur / Pune-Kolhapur,18.5286,73.8744
+DD,Daund Jn,Pune,Mumbai-Pune-Solapur,18.4642,74.5815
+KWV,Kurduwadi,Solapur,Mumbai-Pune-Solapur,18.0865,75.4192
+SUR,Solapur,Solapur,Mumbai-Pune-Solapur,17.6599,75.9064
+KSRA,Kasara,Mumbai CR,Mumbai-Nagpur trunk (ghat),19.6167,73.4833
+IGP,Igatpuri,Bhusawal,Mumbai-Nagpur trunk (ghat),19.6989,73.5622
+NK,Nashik Road,Bhusawal,Mumbai-Nagpur trunk,19.9333,73.833
+MMR,Manmad Jn,Bhusawal,Mumbai-Nagpur trunk,20.2539,74.439
+BSL,Bhusawal Jn,Bhusawal,Mumbai-Nagpur trunk,21.0433,75.7849
+AK,Akola Jn,Bhusawal,Mumbai-Nagpur trunk,20.7002,77.0082
+BD,Badnera Jn,Bhusawal,Mumbai-Nagpur trunk,20.8586,77.7414
+WR,Wardha Jn,Nagpur,Mumbai-Nagpur trunk,20.7453,78.6022
+NGP,Nagpur Jn,Nagpur,Mumbai-Nagpur trunk,21.1466,79.0889
+STR,Satara,Pune,Pune-Kolhapur,17.6805,73.9932
+KRD,Karad,Pune,Pune-Kolhapur,17.2906,74.193
+SLI,Sangli,Pune,Pune-Kolhapur,16.8608,74.572
+MRJ,Miraj Jn,Pune,Pune-Kolhapur,16.8281,74.642
+KOP,Kolhapur,Pune,Pune-Kolhapur,16.6975,74.2433

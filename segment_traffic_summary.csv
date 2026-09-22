@@ -1,0 +1,24 @@
+track_id,corridor,from_station,to_station,length_km,trains_per_week,congestion_level
+T001,Mumbai-Pune-Solapur,CSTM,DR,9,51,High
+T002,Mumbai-Pune-Solapur,DR,KYN,45,51,High
+T003,Mumbai-Pune-Solapur,KYN,KJT,46,51,High
+T004,Mumbai-Pune-Solapur,KJT,LNL,28,51,High
+T005,Mumbai-Pune-Solapur,LNL,PUNE,64,51,High
+T006,Mumbai-Pune-Solapur,PUNE,DD,43,51,High
+T007,Mumbai-Pune-Solapur,DD,KWV,85,51,High
+T008,Mumbai-Pune-Solapur,KWV,SUR,136,51,High
+T009,Mumbai-Nagpur Trunk,CSTM,KYN,54,38,High
+T010,Mumbai-Nagpur Trunk,KYN,KSRA,66,38,High
+T011,Mumbai-Nagpur Trunk,KSRA,IGP,12,38,High
+T012,Mumbai-Nagpur Trunk,IGP,NK,55,38,High
+T013,Mumbai-Nagpur Trunk,NK,MMR,75,38,High
+T014,Mumbai-Nagpur Trunk,MMR,BSL,155,38,High
+T015,Mumbai-Nagpur Trunk,BSL,AK,132,38,High
+T016,Mumbai-Nagpur Trunk,AK,BD,68,38,High
+T017,Mumbai-Nagpur Trunk,BD,WR,163,38,High
+T018,Mumbai-Nagpur Trunk,WR,NGP,57,38,High
+T019,Pune-Kolhapur,PUNE,STR,110,14,Medium
+T020,Pune-Kolhapur,STR,KRD,50,14,Medium
+T021,Pune-Kolhapur,KRD,SLI,70,14,Medium
+T022,Pune-Kolhapur,SLI,MRJ,10,14,Medium
+T023,Pune-Kolhapur,MRJ,KOP,35,14,Medium
