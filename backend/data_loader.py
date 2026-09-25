@@ -19,16 +19,60 @@ def minutes_to_time_str(mins: int) -> str:
     m = mins % 60
     return f"{h:02d}:{m:02d}"
 
+RESOURCE_DEPARTMENT_MAP = {
+    # Engineering (Civil / Track - P-Way & Bridges)
+    "Tamping Machine (BCM)": "Civil Engineering",
+    "Track Machine Gang": "Civil Engineering",
+    "Bridge Inspection Team": "Civil Engineering",
+    "Welding Crew": "Civil Engineering",
+    "Manual Gang": "Civil Engineering",
+    "USFD Vehicle": "Civil Engineering",
+    "Rail Grinding Machine": "Civil Engineering",
+    "P&C Maintenance Gang": "Civil Engineering",
+    
+    # Electrical (TRD / OHE)
+    "OHE Maintenance Van": "Electrical (TRD)",
+    "OHE Inspection Car": "Electrical (TRD)",
+    "Tower Wagon": "Electrical (TRD)",
+    "Electrical Gang": "Electrical (TRD)",
+    
+    # Signal & Telecom (S&T)
+    "S&T Maintenance Team": "Signal & Telecom (S&T)",
+    "Signal Testing Unit": "Signal & Telecom (S&T)",
+    "Interlocking & Points Crew": "Signal & Telecom (S&T)",
+    
+    # Mechanical (C&W)
+    "Accident Relief Train (ART)": "Mechanical (C&W)",
+    "140T Crane": "Mechanical (C&W)"
+}
+
+def get_department_for_resource(resource: str) -> str:
+    res_clean = (resource or "").strip()
+    if res_clean in RESOURCE_DEPARTMENT_MAP:
+        return RESOURCE_DEPARTMENT_MAP[res_clean]
+    for key, dept in RESOURCE_DEPARTMENT_MAP.items():
+        if key.lower() in res_clean.lower() or res_clean.lower() in key.lower():
+            return dept
+    if any(w in res_clean.lower() for w in ["ohe", "electrical", "wire", "traction", "power"]):
+        return "Electrical (TRD)"
+    if any(w in res_clean.lower() for w in ["signal", "s&t", "telecom", "interlock", "point machine"]):
+        return "Signal & Telecom (S&T)"
+    if any(w in res_clean.lower() for w in ["crane", "wagon", "art", "carriage"]):
+        return "Mechanical (C&W)"
+    return "Civil Engineering"
+
 class DataLoader:
     def __init__(self, data_dir: Optional[str] = None):
         self.data_dir = data_dir or BASE_DIR
         self.stations: Dict[str, Dict[str, Any]] = {}
         self.segments: Dict[str, Dict[str, Any]] = {}
         self.station_pair_to_segment: Dict[Tuple[str, str], Dict[str, Any]] = {}
+        self.adjacent_segments: Dict[str, List[str]] = {}
         self.trains: Dict[str, Dict[str, Any]] = {}
         self.train_routes: Dict[str, List[Dict[str, Any]]] = {}
         self.segment_traffic: Dict[str, Dict[str, Any]] = {}
         self.maintenance_logs: List[Dict[str, Any]] = []
+        self.goods_forecasts: List[Dict[str, Any]] = []
         self.segment_train_legs: Dict[str, List[Dict[str, Any]]] = {}
         
         self.load_all()
@@ -78,6 +122,17 @@ class DataLoader:
                 # Pair lookup
                 self.station_pair_to_segment[(seg["from_station"], seg["to_station"])] = seg
                 self.station_pair_to_segment[(seg["to_station"], seg["from_station"])] = seg
+
+        # Compute adjacent segments (segments sharing at least one junction station)
+        self.adjacent_segments = {tid: [] for tid in self.segments}
+        for tid1, seg1 in self.segments.items():
+            stns1 = {seg1["from_station"], seg1["to_station"]}
+            for tid2, seg2 in self.segments.items():
+                if tid1 == tid2:
+                    continue
+                stns2 = {seg2["from_station"], seg2["to_station"]}
+                if bool(stns1 & stns2):
+                    self.adjacent_segments[tid1].append(tid2)
 
     def load_trains(self):
         self.trains.clear()
@@ -140,6 +195,8 @@ class DataLoader:
         filepath = self._file_path("maintenance_log.csv")
         with open(filepath, mode="r", encoding="utf-8") as f:
             for row in csv.DictReader(f):
+                res = row["machine_resource"].strip()
+                dept = get_department_for_resource(res)
                 self.maintenance_logs.append({
                     "event_id": row["event_id"].strip(),
                     "date": row["date"].strip(),
@@ -149,7 +206,8 @@ class DataLoader:
                     "track_position_km": float(row["track_position_km"]),
                     "issue_type": row["issue_type"].strip(),
                     "severity": row["severity"].strip(),
-                    "machine_resource": row["machine_resource"].strip(),
+                    "machine_resource": res,
+                    "department": dept,
                     "block_start": row["block_start"].strip(),
                     "planned_duration_min": int(row["planned_duration_min"]),
                     "actual_duration_min": int(row["actual_duration_min"]),
@@ -157,6 +215,22 @@ class DataLoader:
                     "status": row["status"].strip(),
                     "trains_affected": int(row["trains_affected"])
                 })
+
+    def load_goods_forecasts(self):
+        self.goods_forecasts.clear()
+        filepath = self._file_path("goods_train_forecast.csv")
+        if os.path.exists(filepath):
+            with open(filepath, mode="r", encoding="utf-8") as f:
+                for row in csv.DictReader(f):
+                    self.goods_forecasts.append({
+                        "forecast_id": row["forecast_id"].strip(),
+                        "week_starting": row["week_starting"].strip(),
+                        "corridor": row["corridor"].strip(),
+                        "forecast_freight_trains": int(row["forecast_freight_trains"]),
+                        "dominant_commodity": row["dominant_commodity"].strip(),
+                        "forecast_confidence": row["forecast_confidence"].strip(),
+                        "source": row["source"].strip()
+                    })
 
     def precompute_segment_legs(self):
         """
@@ -273,6 +347,7 @@ class DataLoader:
         self.load_train_routes()
         self.load_segment_traffic()
         self.load_maintenance_logs()
+        self.load_goods_forecasts()
         self.precompute_segment_legs()
 
 # Global singleton

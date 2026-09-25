@@ -193,4 +193,130 @@ class OverrunRiskPredictor:
             }
         }
 
+    def compute_priority(
+        self,
+        item: Dict[str, Any],
+        current_date_str: str = "2026-08-15"
+    ) -> Dict[str, Any]:
+        """
+        Computes Maintenance Priority Score (0-100) based on:
+        - Severity Weight (0-35)
+        - Urgency / Days overdue vs Target SLA Window (0-30)
+        - Segment Congestion Pressure (0-20)
+        - Scheduled Trains Affected / Line Density (0-15)
+        """
+        severity = item.get("severity", "Medium")
+        issue_type = item.get("issue_type", "")
+        track_id = item.get("track_id", "")
+        trains_affected = item.get("trains_affected", 0)
+        event_date_str = item.get("date", "2026-08-01")
+        machine_resource = item.get("machine_resource", "")
+        
+        seg = data_store.segments.get(track_id, {})
+        traffic = data_store.segment_traffic.get(track_id, {})
+        congestion = traffic.get("congestion_level", "Medium")
+        
+        # 1. Severity Score (0 - 35 pts)
+        if severity == "High":
+            sev_pts = 35
+        elif severity == "Medium":
+            sev_pts = 22
+        else:
+            sev_pts = 10
+            
+        if any(term in issue_type.lower() for term in ["fracture", "weld failure", "snag", "signal-track"]):
+            sev_pts = max(sev_pts, 35)
+
+        # 2. Urgency Score (0 - 30 pts)
+        # SLA target window based on severity
+        sla_days = 2 if severity == "High" else (5 if severity == "Medium" else 10)
+        try:
+            cur_d = datetime.strptime(current_date_str, "%Y-%m-%d").date()
+            ev_d = datetime.strptime(event_date_str, "%Y-%m-%d").date()
+            days_pending = max(1, (cur_d - ev_d).days)
+        except Exception:
+            days_pending = 3
+
+        days_overdue = max(0, days_pending - sla_days)
+        urg_pts = min(30, max(5, int(days_pending * 2.5 + days_overdue * 5)))
+
+        # 3. Congestion Score (0 - 20 pts)
+        if congestion == "High":
+            cong_pts = 20
+        elif congestion == "Medium":
+            cong_pts = 12
+        else:
+            cong_pts = 5
+
+        # 4. Trains Affected Score (0 - 15 pts)
+        trains_pts = min(15, max(2, int(trains_affected * 2.2 + (4 if congestion == "High" else 2))))
+
+        total_score = max(5, min(100, sev_pts + urg_pts + cong_pts + trains_pts))
+
+        if total_score >= 80:
+            priority_tier = "Critical Priority"
+            priority_badge_color = "red"
+            action_recommendation = "Immediate Track Possession Required (<24h)"
+        elif total_score >= 60:
+            priority_tier = "High Priority"
+            priority_badge_color = "amber"
+            action_recommendation = "Schedule in Next Available Night Window (<48h)"
+        elif total_score >= 40:
+            priority_tier = "Medium Priority"
+            priority_badge_color = "yellow"
+            action_recommendation = "Integrate into Upcoming 7-Day Corridor Plan"
+        else:
+            priority_tier = "Routine"
+            priority_badge_color = "green"
+            action_recommendation = "Routine Maintenance Backlog Window"
+
+        # Also get overrun prediction for this item to show both distinct scores
+        overrun_pred = self.predict(
+            issue_type=issue_type,
+            severity=severity,
+            machine_resource=machine_resource,
+            track_id=track_id,
+            planned_duration_min=item.get("planned_duration_min", 120),
+            block_start_time=item.get("block_start", "02:00").split(" ")[-1] if " " in item.get("block_start", "") else "02:00"
+        )
+
+        return {
+            **item,
+            "section_name": f"{seg.get('from_station', '')} → {seg.get('to_station', '')}",
+            "corridor": seg.get("corridor", item.get("corridor", "")),
+            "terrain": seg.get("terrain", "plain"),
+            "congestion_level": congestion,
+            "priority_score": total_score,
+            "priority_tier": priority_tier,
+            "priority_badge_color": priority_badge_color,
+            "action_recommendation": action_recommendation,
+            "sla_target_days": sla_days,
+            "days_pending": days_pending,
+            "days_overdue": days_overdue,
+            "overrun_probability_pct": overrun_pred.get("ai_risk_score", 15.0),
+            "overrun_risk_tier": overrun_pred.get("risk_tier", "Low Risk"),
+            "score_breakdown": {
+                "severity_pts": sev_pts,
+                "urgency_pts": urg_pts,
+                "congestion_pts": cong_pts,
+                "trains_affected_pts": trains_pts
+            }
+        }
+
+    def get_prioritized_maintenance_list(self, limit: int = 50) -> List[Dict[str, Any]]:
+        """
+        Returns ranked list of open/planned and backlog maintenance items sorted by Priority Score descending.
+        """
+        # Take planned, rescheduled, or all open maintenance items
+        all_logs = data_store.maintenance_logs
+        scored_items = []
+        for l in all_logs:
+            # Score each log
+            scored = self.compute_priority(l)
+            scored_items.append(scored)
+
+        # Sort by priority_score descending
+        scored_items.sort(key=lambda x: x["priority_score"], reverse=True)
+        return scored_items[:limit]
+
 risk_predictor = OverrunRiskPredictor()

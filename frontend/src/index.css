@@ -1,38 +1,54 @@
+/* ==========================================================================
+   Rail Sentinel — Railway Control Room Design System (v3 Light Theme)
+   Warm off-white base, soft warm-grey panels, dark slate text,
+   and functional railway signaling status accents (amber, green, red).
+   ========================================================================== */
+
 :root {
-  --bg-primary: #070d1e;
-  --bg-secondary: #0d1733;
-  --bg-card: #112046;
-  --bg-card-hover: #162a5c;
-  --bg-glass: rgba(17, 32, 70, 0.75);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-active: #2a488a;
+  /* Railway Signaling Light Theme Palette (Section 3 of Spec v3) */
+  --bg-base: #F6F3EC;               /* Warm off-white base */
+  --bg-panel: #EDE7DA;              /* Soft warm grey surface */
+  --bg-panel-elevated: #F3ECE1;     /* Inset instrument / input surface */
+  --bg-panel-deep: #E2DACB;         /* Header and darker section surface */
+  --bg-input: #FFFFFF;              /* Crisp clean input fields */
   
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  
-  --ir-red: #ef4444;
-  --ir-red-bg: rgba(239, 68, 68, 0.15);
-  --ir-amber: #f59e0b;
-  --ir-amber-bg: rgba(245, 158, 11, 0.15);
-  --ir-emerald: #10b981;
-  --ir-emerald-bg: rgba(16, 185, 129, 0.15);
-  --ir-cyan: #0ea5e9;
-  --ir-cyan-bg: rgba(14, 165, 233, 0.15);
-  --ir-purple: #a855f7;
-  --ir-purple-bg: rgba(168, 85, 247, 0.15);
+  --signal-amber: #E3A63E;          /* Primary accent: attention, in-progress */
+  --signal-amber-bg: rgba(227, 166, 62, 0.16);
+  --signal-amber-border: rgba(227, 166, 62, 0.55);
+  --signal-amber-text: #8C5800;
 
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --signal-green: #4F9D69;          /* Secondary accent: clear, healthy, low risk */
+  --signal-green-bg: rgba(79, 157, 105, 0.15);
+  --signal-green-border: rgba(79, 157, 105, 0.5);
+  --signal-green-text: #226437;
 
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --shadow-glow-cyan: 0 0 20px rgba(14, 165, 233, 0.25);
-  --shadow-glow-red: 0 0 20px rgba(239, 68, 68, 0.3);
-  --shadow-glow-green: 0 0 20px rgba(16, 185, 129, 0.3);
+  --signal-red: #C1443C;            /* Alert accent: high severity, conflict */
+  --signal-red-bg: rgba(193, 68, 60, 0.14);
+  --signal-red-border: rgba(193, 68, 60, 0.5);
+  --signal-red-text: #9C2A24;
+
+  --text-primary: #1C2B30;          /* Dark slate for high contrast on light bg */
+  --text-muted: #6B7B80;            /* Muted slate text */
+  --text-faint: #8E9EA2;            /* Technical markings & tags */
+
+  --border-subtle: rgba(28, 43, 48, 0.14);
+  --border-medium: rgba(28, 43, 48, 0.28);
+  --border-active: #E3A63E;
+
+  --track-steel: #8C9DA1;
+  --track-rail: #5D7075;
+
+  /* Typography (Section 2 of Spec) */
+  --font-ui: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', "SFMono-Regular", Consolas, Menlo, monospace;
+
+  /* Elevation Shadows (clean, physical control-panel look) */
+  --shadow-panel: 0 2px 10px rgba(28, 43, 48, 0.08);
+  --shadow-drawer: -4px 0 20px rgba(28, 43, 48, 0.18);
+  --shadow-inset: inset 0 1px 3px rgba(28, 43, 48, 0.1);
 }
 
+/* Base Reset & Typography */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -40,441 +56,846 @@
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-base);
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
+  text-align: left;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: var(--bg-base);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e3264;
-  border-radius: 4px;
+  background: #C8BFB0;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a488a;
+  background: var(--track-steel);
 }
 
-/* Layout */
+/* Data Readout Classes (IBM Plex Mono) */
+.mono-text,
+.chainage-tag,
+.train-number,
+.track-id,
+.timestamp-val,
+.kpi-value,
+code {
+  font-family: var(--font-mono) !important;
+}
+
+/* ==========================================================================
+   Main Shell Layout: Header + (Sidebar + Main Content)
+   ========================================================================== */
+
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--bg-base);
 }
 
-/* Header */
-.app-header {
-  background: linear-gradient(180deg, #0f1c3f 0%, #0a1329 100%);
-  border-bottom: 1px solid var(--border-active);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: var(--shadow-md);
-}
-
-.header-top {
+/* Top Navigation Bar */
+.control-topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
+  padding: 10px 20px;
+  background-color: var(--bg-panel);
   border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  min-height: 56px;
+  box-shadow: 0 1px 4px rgba(28, 43, 48, 0.05);
 }
 
-.brand-section {
+.topbar-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
-.logo-badge {
-  background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
-  color: white;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+.sidebar-toggle-btn {
+  background: var(--bg-panel-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.brand-title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: #ffffff;
+.sidebar-toggle-btn:hover {
+  background: var(--bg-panel-deep);
+  border-color: var(--signal-amber);
+}
+
+.brand-display {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-align: left;
+}
+
+.brand-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.brand-title span {
-  background: linear-gradient(90deg, #38bdf8, #818cf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.brand-subtitle {
+.brand-subtext {
   font-size: 0.78rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+  color: var(--text-muted);
+  font-weight: 400;
 }
 
-.header-right {
+.topbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
-.demo-dataset-badge {
-  display: flex;
+.dataset-banner-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #fbbf24;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  gap: 7px;
+  padding: 5px 12px;
+  background: var(--signal-amber-bg);
+  border: 1px solid var(--signal-amber-border);
+  color: var(--signal-amber-text);
+  border-radius: 3px;
+  font-size: 0.76rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.system-status {
-  display: flex;
+.dataset-banner-btn:hover {
+  background: rgba(227, 166, 62, 0.25);
+}
+
+.live-signal-status {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
-  color: #94a3b8;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--text-muted);
+  background: var(--bg-panel-elevated);
+  border: 1px solid var(--border-subtle);
   padding: 5px 12px;
-  border-radius: 20px;
+  border-radius: 3px;
 }
 
-.pulse-dot {
-  width: 8px;
-  height: 8px;
+.signal-lamp {
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background-color: #10b981;
-  box-shadow: 0 0 8px #10b981;
-  animation: pulse 2s infinite;
+  background-color: var(--signal-green);
+  box-shadow: 0 0 6px var(--signal-green);
+  display: inline-block;
+  flex-shrink: 0;
 }
 
-@keyframes pulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+.signal-lamp.amber {
+  background-color: var(--signal-amber);
+  box-shadow: 0 0 6px var(--signal-amber);
 }
 
-/* Nav Tabs */
-.nav-tabs {
+.signal-lamp.red {
+  background-color: var(--signal-red);
+  box-shadow: 0 0 6px var(--signal-red);
+}
+
+/* Layout Body: Sidebar + Main Content */
+.app-body {
   display: flex;
-  padding: 0 24px;
-  gap: 8px;
-  overflow-x: auto;
-}
-
-.nav-tab {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 18px;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.nav-tab:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.nav-tab.active {
-  color: #38bdf8;
-  border-bottom-color: #38bdf8;
-  background: rgba(56, 189, 248, 0.06);
-}
-
-/* Main Content Area */
-.main-content {
   flex: 1;
-  padding: 24px;
-  max-width: 1440px;
-  width: 100%;
-  margin: 0 auto;
+  position: relative;
+  min-height: calc(100vh - 56px);
 }
 
-/* Common Card */
-.glass-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: var(--shadow-md);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
+/* ==========================================================================
+   Collapsible Left Sidebar (Sliding Navigation + Live Network Summary)
+   ========================================================================== */
 
-.glass-card:hover {
-  border-color: var(--border-active);
-}
-
-/* Section Header */
-.section-header {
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.section-desc {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  margin-top: 4px;
-}
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 18px;
-  font-size: 0.88rem;
-  font-weight: 600;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-family: var(--font-sans);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.5);
-  transform: translateY(-1px);
-}
-
-.btn-danger {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  color: white;
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  color: white;
-}
-
-.btn-secondary {
-  background: #1e293b;
-  color: var(--text-primary);
-  border: 1px solid var(--border-subtle);
-}
-
-.btn-secondary:hover {
-  background: #334155;
-}
-
-/* Form Controls */
-.form-group {
+.control-sidebar {
+  background-color: var(--bg-panel);
+  border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  transition: width 0.25s cubic-bezier(0.2, 0, 0, 1);
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-shrink: 0;
+  z-index: 900;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
 }
 
-.form-label {
-  font-size: 0.82rem;
+.control-sidebar.expanded {
+  width: 270px;
+}
+
+.control-sidebar.collapsed {
+  width: 62px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 8px;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 0.86rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 0 3px 3px 0;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.sidebar-nav-item:hover {
+  background: rgba(28, 43, 48, 0.05);
+  color: var(--text-primary);
+}
+
+.sidebar-nav-item.active {
+  background: var(--bg-panel-elevated);
+  color: var(--text-primary);
+  border-left-color: var(--signal-amber);
   font-weight: 600;
-  color: var(--text-secondary);
+}
+
+.sidebar-nav-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-nav-label {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.control-sidebar.collapsed .sidebar-nav-label {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+}
+
+/* Sidebar Network Telemetry Summary */
+.sidebar-telemetry {
+  margin-top: auto;
+  padding: 14px 12px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-panel-deep);
+}
+
+.telemetry-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.form-select,
-.form-input {
-  background: #09132b;
-  border: 1px solid #1e3264;
-  color: var(--text-primary);
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 0.92rem;
-  font-family: var(--font-sans);
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.form-select:focus,
-.form-input:focus {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-}
-
-/* Badges */
-.badge {
-  display: inline-flex;
+.telemetry-metric-row {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
+  padding: 4px 0;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(28, 43, 48, 0.08);
+}
+
+.telemetry-metric-row span:last-child {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Main Workspace */
+.main-workspace {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Hero Satellite Corridor Map Container
+   ========================================================================== */
+
+.hero-satellite-container {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-top: 3px solid var(--signal-amber);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-panel);
+}
+
+.hero-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: var(--bg-panel-deep);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.hero-title-group {
+  text-align: left;
+}
+
+.hero-main-title {
+  font-size: 1.15rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.badge-red {
-  background: var(--ir-red-bg);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+.hero-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
-.badge-amber {
-  background: var(--ir-amber-bg);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.4);
-}
-
-.badge-green {
-  background: var(--ir-emerald-bg);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.4);
-}
-
-.badge-cyan {
-  background: var(--ir-cyan-bg);
-  color: #38bdf8;
-  border: 1px solid rgba(14, 165, 233, 0.4);
-}
-
-.badge-purple {
-  background: var(--ir-purple-bg);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.4);
-}
-
-/* Grid helper */
-.grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.hero-legend-group {
+  display: flex;
+  align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
-.grid-4 {
+.legend-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.legend-dot.green { background: var(--signal-green); }
+.legend-dot.amber { background: var(--signal-amber); }
+.legend-dot.red { background: var(--signal-red); }
+
+/* ==========================================================================
+   Distinct Panel Treatments for the 5 Feature Modules
+   ========================================================================== */
+
+/* Layout Grid for Panels */
+.panels-grid-dual {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
 }
 
-@media (max-width: 1024px) {
-  .grid-2, .grid-3, .grid-4 {
+.panels-grid-full {
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .panels-grid-dual {
     grid-template-columns: 1fr;
   }
 }
 
-/* KPI Card */
-.kpi-card {
-  background: var(--bg-card);
+/* --------------------------------------------------------------------------
+   Panel 1: Conflict Checker — Industrial Chamfered Chamber (Panel Type A)
+   -------------------------------------------------------------------------- */
+.panel-conflict {
+  background-color: var(--bg-panel);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  border-left: 4px solid var(--signal-amber);
+  border-radius: 0;
+  position: relative;
+  box-shadow: var(--shadow-panel);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% 100%,
+    16px 100%,
+    0 calc(100% - 16px)
+  );
+  padding: 22px;
 }
 
-.kpi-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.panel-conflict::before {
+  content: "CH-01 // OCCUPANCY DETECTOR";
+  position: absolute;
+  top: 8px;
+  right: 28px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  letter-spacing: 1px;
 }
 
-.kpi-value {
-  font-size: 1.5rem;
-  font-weight: 800;
+.panel-conflict.conflict-active {
+  border-left-color: var(--signal-red);
+}
+
+.panel-conflict.clear-active {
+  border-left-color: var(--signal-green);
+}
+
+/* --------------------------------------------------------------------------
+   Panel 2: Block Recommender — Asymmetric Slanted Tab & Gauge Matrix (Panel Type B)
+   -------------------------------------------------------------------------- */
+.panel-recommender {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-top: 3px solid var(--signal-green);
+  border-radius: 4px 22px 4px 22px;
+  position: relative;
+  box-shadow: var(--shadow-panel);
+  padding: 22px;
+}
+
+.panel-recommender::before {
+  content: "REC-02 // FEASIBILITY ENGINE";
+  position: absolute;
+  top: 8px;
+  right: 28px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  letter-spacing: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   Panel 3: Congestion Heatmap — Full-Width Console Bezel (Panel Type C)
+   -------------------------------------------------------------------------- */
+.panel-heatmap {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  outline: 1px solid rgba(227, 166, 62, 0.35);
+  outline-offset: -3px;
+  border-radius: 3px;
+  box-shadow: var(--shadow-panel);
+  padding: 22px;
+  position: relative;
+}
+
+.panel-heatmap::before {
+  content: "MAP-03 // CORRIDOR TELEMETRY";
+  position: absolute;
+  top: 8px;
+  right: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  letter-spacing: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   Panel 4: Maintenance Calendar — Slate Terminal Matrix (Panel Type D)
+   -------------------------------------------------------------------------- */
+.panel-calendar {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  box-shadow: var(--shadow-panel);
+  padding: 22px;
+  position: relative;
+}
+
+.panel-calendar::before {
+  content: "LOG-04 // 30-DAY BLOCK REGISTER";
+  position: absolute;
+  top: 8px;
+  right: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  letter-spacing: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   Panel 5: Overrun Risk Predictor — Instrumentation Housing (Panel Type E)
+   -------------------------------------------------------------------------- */
+.panel-predictor {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px 4px 20px 4px;
+  box-shadow: var(--shadow-panel);
+  padding: 22px;
+  position: relative;
+}
+
+.panel-predictor::before {
+  content: "RSK-05 // OVERRUN PREDICTOR";
+  position: absolute;
+  top: 8px;
+  right: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   Common Section Headers (Sentence case, Left-aligned)
+   ========================================================================== */
+
+.panel-header {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.panel-title {
+  font-size: 1.18rem;
+  font-weight: 700;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  letter-spacing: -0.2px;
+}
+
+.panel-desc {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+/* ==========================================================================
+   Control Room Forms & Inputs (Light Theme Contrast)
+   ========================================================================== */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+}
+
+.form-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+.form-select,
+.form-input {
+  background: var(--bg-input);
+  border: 1px solid #D5CCC0;
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 3px;
+  font-size: 0.88rem;
+  font-family: var(--font-ui);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-select:focus,
+.form-input:focus {
+  border-color: var(--signal-amber);
+  box-shadow: 0 0 0 2px var(--signal-amber-bg);
+}
+
+.form-input[type="time"],
+.form-input[type="date"],
+.form-input[type="number"] {
   font-family: var(--font-mono);
 }
 
-.kpi-label {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
+/* ==========================================================================
+   Buttons (Tactile, No arrow suffixes, Left-aligned)
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 16px;
+  font-size: 0.85rem;
   font-weight: 600;
-  text-transform: uppercase;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  font-family: var(--font-ui);
+  text-align: left;
 }
 
-/* Timeline & Tables */
+.btn-primary {
+  background: var(--signal-amber);
+  color: #1C2B30;
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  background: #f0b44f;
+  transform: translateY(-1px);
+}
+
+.btn-green {
+  background: var(--signal-green);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.btn-green:hover {
+  background: #44895c;
+}
+
+.btn-danger {
+  background: var(--signal-red);
+  color: #FFFFFF;
+}
+
+.btn-secondary {
+  background: var(--bg-panel-elevated);
+  color: var(--text-primary);
+  border: 1px solid #D5CCC0;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-panel-deep);
+  border-color: var(--border-medium);
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 0.78rem;
+}
+
+/* ==========================================================================
+   Signal Functional Badges (Functional status colors: Red, Amber, Green)
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-transform: none;
+}
+
+.badge-red {
+  background: var(--signal-red-bg);
+  color: var(--signal-red-text);
+  border: 1px solid var(--signal-red-border);
+}
+
+.badge-amber {
+  background: var(--signal-amber-bg);
+  color: var(--signal-amber-text);
+  border: 1px solid var(--signal-amber-border);
+}
+
+.badge-green {
+  background: var(--signal-green-bg);
+  color: var(--signal-green-text);
+  border: 1px solid var(--signal-green-border);
+}
+
+.badge-slate {
+  background: rgba(28, 43, 48, 0.08);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+/* ==========================================================================
+   Data Tables & Grids (Light Theme)
+   ========================================================================== */
+
 .table-container {
   overflow-x: auto;
-  border-radius: 10px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid #D5CCC0;
+  border-radius: 2px;
+  background: var(--bg-input);
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   text-align: left;
 }
 
 .data-table th {
-  background: #09132b;
-  color: var(--text-secondary);
-  padding: 12px 16px;
+  background: var(--bg-panel-deep);
+  color: var(--text-primary);
+  padding: 10px 14px;
   font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.74rem;
+  border-bottom: 1px solid #D5CCC0;
+  letter-spacing: 0.3px;
+  text-align: left;
 }
 
 .data-table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(28, 43, 48, 0.07);
   color: var(--text-primary);
+  text-align: left;
 }
 
 .data-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(28, 43, 48, 0.02);
 }
 
-.mono-text {
+/* Operational KPI Cards */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.kpi-card {
+  background: var(--bg-panel-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+}
+
+.kpi-val {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-primary);
   font-family: var(--font-mono);
+  line-height: 1.1;
+}
+
+.kpi-lbl {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   Leaflet Tooltips & Overlays (Light Theme Control Room)
+   ========================================================================== */
+
+.leaflet-container {
+  font-family: var(--font-ui) !important;
+}
+
+.leaflet-bar a {
+  background-color: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: var(--bg-panel-deep) !important;
+}
+
+.satellite-tooltip {
+  background: #1C2B30 !important;
+  color: #F6F3EC !important;
+  border: 1px solid #4F646A !important;
+  border-radius: 2px !important;
+  padding: 5px 8px !important;
+  font-size: 0.74rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.satellite-tooltip::before {
+  border-top-color: #1C2B30 !important;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.app-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border-subtle);
+  background-color: var(--bg-panel-deep);
+  padding: 14px 24px;
+  font-size: 0.77rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  text-align: left;
+}
+
+/* Upload Action Button Hover State */
+.upload-btn-hover {
+  transition: all 0.15s ease;
+}
+
+.upload-btn-hover:hover {
+  background-color: var(--bg-panel-elevated) !important;
+  border-color: var(--signal-amber) !important;
+  color: var(--signal-amber-text) !important;
 }

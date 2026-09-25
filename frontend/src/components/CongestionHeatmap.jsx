@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
-import { MapPin, Navigation, Gauge, AlertTriangle, Mountain, Zap, ArrowUpRight } from 'lucide-react';
+import { MapPin, Navigation, Gauge, AlertTriangle, Mountain, Zap } from 'lucide-react';
 
 export default function CongestionHeatmap({ segments, stations, corridors, onSelectSegment }) {
   const mapContainerRef = useRef(null);
@@ -11,7 +11,6 @@ export default function CongestionHeatmap({ segments, stations, corridors, onSel
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    // Initialize map centered on Maharashtra (approx 19.3° N, 75.5° E)
     if (!mapInstanceRef.current) {
       const map = L.map(mapContainerRef.current, {
         center: [19.2, 75.7],
@@ -20,8 +19,7 @@ export default function CongestionHeatmap({ segments, stations, corridors, onSel
         attributionControl: false
       });
 
-      // Dark CartoDB tile layer for modern command-center aesthetic
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 18,
         subdomains: 'abcd',
       }).addTo(map);
@@ -38,28 +36,28 @@ export default function CongestionHeatmap({ segments, stations, corridors, onSel
       }
     });
 
-    // Draw track segments as polylines
+    // Draw track segments
     segments.forEach((seg) => {
       if (!seg.from_coords || !seg.to_coords) return;
       if (activeCorridorFilter !== 'All' && seg.corridor !== activeCorridorFilter) return;
 
       const isHigh = seg.congestion_level === 'High';
       const isMedium = seg.congestion_level === 'Medium';
-      const color = isHigh ? '#ef4444' : (isMedium ? '#f59e0b' : '#10b981');
+      const color = isHigh ? '#C1443C' : (isMedium ? '#E3A63E' : '#4F9D69');
       const isGhat = seg.terrain === 'ghat/hilly';
 
-      // Outer glow line for high congestion or ghat
-      const glowPolyline = L.polyline([seg.from_coords, seg.to_coords], {
+      // Outer track glow for high congestion
+      L.polyline([seg.from_coords, seg.to_coords], {
         color: color,
-        weight: isHigh ? 8 : 6,
-        opacity: isHigh ? 0.35 : 0.2,
+        weight: isHigh ? 7 : 5,
+        opacity: isHigh ? 0.35 : 0.18,
         lineCap: 'round'
       }).addTo(map);
 
       // Core track line
       const polyline = L.polyline([seg.from_coords, seg.to_coords], {
         color: color,
-        weight: isHigh ? 4.5 : 3.5,
+        weight: isHigh ? 4 : 3,
         opacity: 0.95,
         dashArray: isGhat ? '6, 6' : undefined,
         lineCap: 'round'
@@ -70,13 +68,13 @@ export default function CongestionHeatmap({ segments, stations, corridors, onSel
       });
 
       polyline.bindTooltip(`
-        <div style="font-family: sans-serif; padding: 4px 6px;">
-          <strong style="color: ${color};">${seg.track_id}: ${seg.from_station} ➔ ${seg.to_station}</strong><br/>
-          <span style="font-size: 11px; color: #cbd5e1;">${seg.corridor}</span><br/>
-          <span style="font-size: 11px; font-weight: bold;">${seg.trains_per_week} trains/week (${seg.congestion_level} Congestion)</span><br/>
-          <span style="font-size: 10px; color: #94a3b8;">${seg.length_km} km • ${seg.terrain}</span>
+        <div style="font-family: 'IBM Plex Sans', sans-serif; padding: 4px 6px; text-align: left; color: #1C2B30;">
+          <strong style="color: ${color}; font-family: 'IBM Plex Mono', monospace;">${seg.track_id}: ${seg.from_station} ➔ ${seg.to_station}</strong><br/>
+          <span style="font-size: 11px; color: #1C2B30;">${seg.corridor}</span><br/>
+          <span style="font-size: 11px; font-weight: 600; color: #1C2B30;">${seg.trains_per_week} trains/week (${seg.congestion_level} congestion)</span><br/>
+          <span style="font-size: 10px; color: #6B7B80;">${seg.length_km} km • ${seg.terrain}</span>
         </div>
-      `, { sticky: true, className: 'leaflet-dark-tooltip' });
+      `, { sticky: true, className: 'satellite-tooltip' });
     });
 
     // Draw station markers
@@ -89,54 +87,52 @@ export default function CongestionHeatmap({ segments, stations, corridors, onSel
       const isJunction = ['CSTM', 'KYN', 'PUNE', 'BSL', 'NGP', 'MRJ'].includes(stn.station_code);
 
       const circle = L.circleMarker([stn.latitude, stn.longitude], {
-        radius: isJunction ? 6.5 : 4.5,
-        fillColor: isJunction ? '#38bdf8' : '#ffffff',
+        radius: isJunction ? 6 : 4,
+        fillColor: isJunction ? '#E3A63E' : '#FFFFFF',
         fillOpacity: 1,
-        color: '#070d1e',
-        weight: 2
+        color: '#1C2B30',
+        weight: 1.5
       }).addTo(map);
 
       circle.bindTooltip(`
-        <div style="font-family: sans-serif; padding: 4px;">
-          <strong>${stn.station_name} (${stn.station_code})</strong><br/>
-          <span style="font-size: 11px; color: #94a3b8;">Division: ${stn.division}</span>
+        <div style="font-family: 'IBM Plex Sans', sans-serif; padding: 4px; text-align: left; color: #1C2B30;">
+          <strong style="color: #1C2B30;">${stn.station_name} (${stn.station_code})</strong><br/>
+          <span style="font-size: 11px; color: #6B7B80;">Division: ${stn.division}</span>
         </div>
-      `);
+      `, { className: 'satellite-tooltip' });
     });
 
   }, [segments, stations, activeCorridorFilter]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* Top Banner */}
-      <div className="glass-card" style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+    <section className="panel-heatmap">
+      {/* Panel Header */}
+      <div className="panel-header">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Navigation size={22} color="#ef4444" />
-              <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#f8fafc' }}>
-                Corridor Traffic & Maintenance Congestion Heatmap
-              </h2>
+            <div className="panel-title">
+              <Navigation size={20} color="var(--signal-amber)" />
+              <span>Corridor traffic and maintenance congestion heatmap</span>
             </div>
-            <p style={{ color: '#94a3b8', fontSize: '0.88rem', marginTop: '4px' }}>
+            <p className="panel-desc">
               Visualizes weekly train frequencies and maintenance bottleneck sensitivity across Central Railway's 3 primary Maharashtra corridors.
             </p>
           </div>
 
-          {/* Corridor Filter Buttons */}
+          {/* Corridor Filter Toggles */}
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
             <button
-              className={`badge ${activeCorridorFilter === 'All' ? 'badge-cyan' : 'badge-purple'}`}
-              style={{ cursor: 'pointer', padding: '6px 12px', fontSize: '0.78rem' }}
+              type="button"
+              className={`btn btn-sm ${activeCorridorFilter === 'All' ? 'btn-primary' : 'btn-secondary'}`}
               onClick={() => setActiveCorridorFilter('All')}
             >
-              All Corridors (23 Segments)
+              All corridors (23 segments)
             </button>
             {corridors.map((c, i) => (
               <button
                 key={i}
-                className={`badge ${activeCorridorFilter === c.name ? 'badge-cyan' : 'badge-purple'}`}
-                style={{ cursor: 'pointer', padding: '6px 12px', fontSize: '0.78rem' }}
+                type="button"
+                className={`btn btn-sm ${activeCorridorFilter === c.name ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => setActiveCorridorFilter(c.name)}
               >
                 {c.name}
@@ -146,205 +142,204 @@ export default function CongestionHeatmap({ segments, stations, corridors, onSel
         </div>
       </div>
 
-      {/* Corridor KPI overview cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+      {/* Corridor Overview Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '18px' }}>
         {corridors.map((c, idx) => (
-          <div key={idx} className="glass-card" style={{ padding: '16px' }}>
+          <div key={idx} style={{ background: 'var(--bg-panel-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '14px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#38bdf8' }}>Corridor {idx + 1}</span>
-              <span className="badge badge-amber" style={{ fontSize: '0.68rem' }}>
-                {c.high_congestion_count} High Traffic
+              <span style={{ fontSize: '0.74rem', fontWeight: '700', color: 'var(--signal-amber)' }}>Corridor {idx + 1}</span>
+              <span className="badge badge-amber">
+                {c.high_congestion_count} high traffic
               </span>
             </div>
-            <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#ffffff', marginTop: '6px' }}>
+            <div style={{ fontSize: '0.96rem', fontWeight: '700', color: 'var(--text-primary)', marginTop: '4px' }}>
               {c.name}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', fontSize: '0.78rem', color: '#94a3b8', borderTop: '1px solid var(--border-subtle)', paddingTop: '8px' }}>
-              <span>Length: <strong style={{ color: '#f8fafc' }}>{c.total_km} km</strong></span>
-              <span>Stations: <strong style={{ color: '#f8fafc' }}>{c.station_count}</strong></span>
-              <span>Ghat Sec: <strong style={{ color: '#f8fafc' }}>{c.ghat_segments_count}</strong></span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '0.76rem', color: 'var(--text-muted)', borderTop: '1px solid rgba(143, 163, 168, 0.1)', paddingTop: '8px' }}>
+              <span>Length: <strong className="mono-text" style={{ color: 'var(--text-primary)' }}>{c.total_km} km</strong></span>
+              <span>Stations: <strong className="mono-text" style={{ color: 'var(--text-primary)' }}>{c.station_count}</strong></span>
+              <span>Ghat: <strong className="mono-text" style={{ color: 'var(--text-primary)' }}>{c.ghat_segments_count}</strong></span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Map + Detail Panel */}
-      <div className="grid-2" style={{ gridTemplateColumns: '1fr 360px', minHeight: '520px' }}>
-        {/* Map View */}
-        <div className="glass-card" style={{ padding: '4px', position: 'relative', overflow: 'hidden' }}>
+      {/* Map + Detail Inspector Grid */}
+      <div className="panels-grid-dual" style={{ gridTemplateColumns: '1fr 350px', minHeight: '500px' }}>
+        {/* Interactive Map View */}
+        <div style={{ background: 'var(--bg-panel-deep)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '2px', position: 'relative', overflow: 'hidden' }}>
           <div 
             ref={mapContainerRef} 
             style={{ 
               width: '100%', 
-              height: '520px', 
-              borderRadius: '10px',
-              background: '#070d1e'
+              height: '500px', 
+              borderRadius: '2px',
+              background: '#EDE7DA'
             }} 
           />
 
-          {/* Map Legend Floating */}
+          {/* Map Legend */}
           <div style={{
             position: 'absolute',
-            bottom: '16px',
-            left: '16px',
-            background: 'rgba(7, 13, 30, 0.88)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid var(--border-active)',
-            borderRadius: '8px',
+            bottom: '14px',
+            left: '14px',
+            background: 'rgba(237, 231, 218, 0.94)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: '2px',
             padding: '10px 14px',
-            fontSize: '0.75rem',
+            fontSize: '0.74rem',
             zIndex: 1000,
             display: 'flex',
             flexDirection: 'column',
-            gap: '6px'
+            gap: '5px',
+            textAlign: 'left'
           }}>
-            <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '2px' }}>Congestion Heatmap Legend</div>
+            <div style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '2px' }}>Congestion status legend</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '20px', height: '4px', background: '#ef4444', borderRadius: '2px' }} />
-              <span style={{ color: '#cbd5e1' }}>High Congestion (38–51 trains/wk — Tight Slack)</span>
+              <div style={{ width: '18px', height: '4px', background: 'var(--signal-red)', borderRadius: '1px' }} />
+              <span style={{ color: 'var(--text-primary)' }}>High congestion (38–51 trains/wk)</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '20px', height: '4px', background: '#f59e0b', borderRadius: '2px' }} />
-              <span style={{ color: '#cbd5e1' }}>Medium Congestion (14–25 trains/wk)</span>
+              <div style={{ width: '18px', height: '4px', background: 'var(--signal-amber)', borderRadius: '1px' }} />
+              <span style={{ color: 'var(--text-primary)' }}>Medium congestion (14–25 trains/wk)</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '20px', height: '4px', background: '#10b981', borderRadius: '2px' }} />
-              <span style={{ color: '#cbd5e1' }}>Low Congestion (Frequent Open Windows)</span>
+              <div style={{ width: '18px', height: '4px', background: 'var(--signal-green)', borderRadius: '1px' }} />
+              <span style={{ color: 'var(--text-primary)' }}>Low congestion (Open track headroom)</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
-              <div style={{ width: '20px', height: '2px', borderTop: '2px dashed #f59e0b' }} />
-              <span style={{ color: '#94a3b8' }}>Dashed = Ghat / Hilly Alignment (60 km/h)</span>
+              <div style={{ width: '18px', height: '2px', borderTop: '2px dashed var(--signal-amber)' }} />
+              <span style={{ color: 'var(--text-muted)' }}>Dashed = Ghat alignment (1:37 gradient)</span>
             </div>
           </div>
         </div>
 
         {/* Segment Inspector Drawer */}
-        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div style={{ background: 'var(--bg-panel-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: '700', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Gauge size={18} color="#38bdf8" />
-              Segment Operational Profile
-            </h3>
+            <div style={{ fontSize: '0.9rem', fontWeight: '700', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Gauge size={16} color="var(--signal-amber)" />
+              <span>Segment operational profile</span>
+            </div>
 
             {selectedSeg ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={{ background: '#09132b', border: '1px solid #1e3264', borderRadius: '10px', padding: '14px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ background: 'var(--bg-panel-deep)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '12px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span className="mono-text" style={{ fontSize: '1.2rem', fontWeight: '800', color: '#38bdf8' }}>
+                    <span className="mono-text" style={{ fontSize: '1.15rem', fontWeight: '700', color: 'var(--signal-amber)' }}>
                       {selectedSeg.track_id}
                     </span>
                     <span className={`badge ${selectedSeg.congestion_level === 'High' ? 'badge-red' : (selectedSeg.congestion_level === 'Medium' ? 'badge-amber' : 'badge-green')}`}>
-                      {selectedSeg.congestion_level} Congestion
+                      {selectedSeg.congestion_level} congestion
                     </span>
                   </div>
 
-                  <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#ffffff', marginTop: '6px' }}>
+                  <div style={{ fontSize: '0.98rem', fontWeight: '700', color: 'var(--text-primary)', marginTop: '4px' }}>
                     {selectedSeg.from_station} ➔ {selectedSeg.to_station}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px' }}>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>
                     {selectedSeg.from_station_name} to {selectedSeg.to_station_name}
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '4px' }}>
                     {selectedSeg.corridor}
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.8rem' }}>
-                  <div className="glass-card" style={{ padding: '10px' }}>
-                    <span style={{ color: '#94a3b8' }}>Weekly Traffic</span>
-                    <div className="mono-text" style={{ fontSize: '1.15rem', fontWeight: '700', color: '#ef4444', marginTop: '2px' }}>
-                      {selectedSeg.trains_per_week} <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>trains</span>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'var(--bg-panel-deep)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '8px 10px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Weekly traffic</span>
+                    <div className="mono-text" style={{ fontSize: '1.05rem', fontWeight: '700', color: selectedSeg.congestion_level === 'High' ? 'var(--signal-red)' : 'var(--text-primary)', marginTop: '2px' }}>
+                      {selectedSeg.trains_per_week} <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>trains</span>
                     </div>
                   </div>
 
-                  <div className="glass-card" style={{ padding: '10px' }}>
-                    <span style={{ color: '#94a3b8' }}>Length</span>
-                    <div className="mono-text" style={{ fontSize: '1.15rem', fontWeight: '700', color: '#38bdf8', marginTop: '2px' }}>
-                      {selectedSeg.length_km} <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>km</span>
+                  <div style={{ background: 'var(--bg-panel-deep)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '8px 10px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Length</span>
+                    <div className="mono-text" style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--text-primary)', marginTop: '2px' }}>
+                      {selectedSeg.length_km} <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>km</span>
                     </div>
                   </div>
 
-                  <div className="glass-card" style={{ padding: '10px' }}>
-                    <span style={{ color: '#94a3b8' }}>Max Speed</span>
-                    <div className="mono-text" style={{ fontSize: '1.15rem', fontWeight: '700', color: '#10b981', marginTop: '2px' }}>
-                      {selectedSeg.max_speed_kmph} <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>km/h</span>
+                  <div style={{ background: 'var(--bg-panel-deep)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '8px 10px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Speed limit</span>
+                    <div className="mono-text" style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--signal-green)', marginTop: '2px' }}>
+                      {selectedSeg.max_speed_kmph} <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>km/h</span>
                     </div>
                   </div>
 
-                  <div className="glass-card" style={{ padding: '10px' }}>
-                    <span style={{ color: '#94a3b8' }}>Terrain</span>
-                    <div style={{ marginTop: '4px' }}>
-                      <span className={`badge ${selectedSeg.terrain === 'ghat/hilly' ? 'badge-amber' : 'badge-green'}`} style={{ fontSize: '0.68rem' }}>
+                  <div style={{ background: 'var(--bg-panel-deep)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '8px 10px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Terrain</span>
+                    <div style={{ marginTop: '3px' }}>
+                      <span className={`badge ${selectedSeg.terrain === 'ghat/hilly' ? 'badge-amber' : 'badge-green'}`}>
                         {selectedSeg.terrain}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '8px', padding: '10px', fontSize: '0.78rem', color: '#fbbf24' }}>
-                  <strong>Block Scheduling Advisory:</strong>{' '}
+                <div style={{ background: 'var(--signal-amber-bg)', border: '1px solid var(--signal-amber-border)', borderRadius: '2px', padding: '10px', fontSize: '0.76rem', color: 'var(--signal-amber)' }}>
+                  <strong>Operational advisory:</strong>{' '}
                   {selectedSeg.congestion_level === 'High' 
-                    ? 'Tight corridor with heavy day and night train paths. Recommend 2h max late-night blocks (01:00–04:00).' 
-                    : 'Moderate capacity. Daylight maintenance windows can be safely arranged between passenger halts.'}
+                    ? 'Tight corridor with heavy continuous train paths. Recommended window max 2 hours late-night (01:00–04:00).' 
+                    : 'Track headroom available. Midday or late-night windows can be accommodated safely.'}
                 </div>
               </div>
             ) : (
-              <div style={{ textAlign: 'center', padding: '40px 10px', color: '#64748b' }}>
-                <MapPin size={32} style={{ margin: '0 auto 8px', opacity: 0.5 }} />
-                <p style={{ fontSize: '0.88rem' }}>Click any track segment on the map or schematic to inspect operational metrics.</p>
+              <div style={{ textAlign: 'left', padding: '30px 10px', color: 'var(--text-muted)' }}>
+                <MapPin size={28} style={{ opacity: 0.5, marginBottom: '8px' }} />
+                <p style={{ fontSize: '0.82rem' }}>Select any track segment on the map or schematic to inspect operational parameters.</p>
               </div>
             )}
           </div>
 
           {selectedSeg && (
             <button 
+              type="button"
               className="btn btn-primary"
-              style={{ width: '100%', marginTop: '16px' }}
+              style={{ width: '100%', marginTop: '14px' }}
               onClick={() => {
                 if (onSelectSegment) onSelectSegment(selectedSeg.track_id);
               }}
             >
-              Check Conflicts on {selectedSeg.track_id}
-              <ArrowUpRight size={16} />
+              Check conflicts on {selectedSeg.track_id}
             </button>
           )}
         </div>
       </div>
 
-      {/* Linear Corridor Schematic Diagram */}
-      <div className="glass-card">
-        <h3 style={{ fontSize: '1rem', fontWeight: '700', marginBottom: '16px', color: '#f8fafc' }}>
-          Corridor Schematic Line Diagrams
-        </h3>
+      {/* Corridor Schematic Diagrams */}
+      <div style={{ background: 'var(--bg-panel-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '16px', marginTop: '18px' }}>
+        <div style={{ fontSize: '0.9rem', fontWeight: '700', marginBottom: '14px', color: 'var(--text-primary)' }}>
+          Corridor schematic line diagrams
+        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {corridors.map((c, cIdx) => (
-            <div key={cIdx} style={{ background: '#09132b', border: '1px solid #1e3264', borderRadius: '10px', padding: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <strong style={{ color: '#38bdf8', fontSize: '0.9rem' }}>{c.name}</strong>
-                <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{c.total_km} km • {c.segments.length} segments</span>
+            <div key={cIdx} style={{ background: 'var(--bg-panel-deep)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span style={{ color: 'var(--text-primary)', fontSize: '0.86rem', fontWeight: '600' }}>{c.name}</span>
+                <span className="mono-text" style={{ fontSize: '0.73rem', color: 'var(--text-muted)' }}>{c.total_km} km • {c.segments.length} segments</span>
               </div>
 
               {/* Schematic Node & Segment Rail */}
-              <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '10px 0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '8px 0' }}>
                 {c.segments.map((seg, sIdx) => {
                   const isHigh = seg.traffic?.congestion_level === 'High';
-                  const segColor = isHigh ? '#ef4444' : '#f59e0b';
+                  const segColor = isHigh ? 'var(--signal-red)' : 'var(--signal-amber)';
                   const isGhat = seg.terrain === 'ghat/hilly';
 
                   return (
                     <React.Fragment key={sIdx}>
                       {/* Station Node */}
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '60px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '54px' }}>
                         <div style={{
-                          width: '14px',
-                          height: '14px',
+                          width: '12px',
+                          height: '12px',
                           borderRadius: '50%',
-                          background: '#38bdf8',
-                          border: '3px solid #070d1e',
-                          boxShadow: '0 0 6px rgba(56, 189, 248, 0.8)'
+                          background: 'var(--signal-amber)',
+                          border: '2px solid var(--bg-panel)'
                         }} />
-                        <span className="mono-text" style={{ fontSize: '0.72rem', fontWeight: '700', color: '#f8fafc', marginTop: '4px' }}>
+                        <span className="mono-text" style={{ fontSize: '0.68rem', fontWeight: '600', color: 'var(--text-primary)', marginTop: '4px' }}>
                           {seg.from_station}
                         </span>
                       </div>
@@ -354,37 +349,35 @@ export default function CongestionHeatmap({ segments, stations, corridors, onSel
                         onClick={() => setSelectedSeg(seg)}
                         style={{
                           flex: 1,
-                          minWidth: '70px',
-                          height: '24px',
-                          background: isHigh ? 'rgba(239, 68, 68, 0.2)' : 'rgba(245, 158, 11, 0.2)',
-                          borderTop: `3px ${isGhat ? 'dashed' : 'solid'} ${segColor}`,
-                          borderBottom: `3px ${isGhat ? 'dashed' : 'solid'} ${segColor}`,
+                          minWidth: '60px',
+                          height: '20px',
+                          background: isHigh ? 'var(--signal-red-bg)' : 'var(--signal-amber-bg)',
+                          borderTop: `2px ${isGhat ? 'dashed' : 'solid'} ${segColor}`,
+                          borderBottom: `2px ${isGhat ? 'dashed' : 'solid'} ${segColor}`,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           cursor: 'pointer',
-                          position: 'relative',
-                          transition: 'background 0.2s'
+                          transition: 'background 0.15s'
                         }}
-                        title={`${seg.track_id}: ${seg.from_station}➔${seg.to_station} (${seg.traffic?.trains_per_week || 38} trains/wk)`}
+                        title={`${seg.track_id}: ${seg.from_station}➔${seg.to_station}`}
                       >
-                        <span className="mono-text" style={{ fontSize: '0.65rem', fontWeight: '700', color: segColor }}>
+                        <span className="mono-text" style={{ fontSize: '0.62rem', fontWeight: '700', color: segColor }}>
                           {seg.track_id}
                         </span>
                       </div>
 
-                      {/* Terminal Station for the last segment */}
+                      {/* Final Station on corridor */}
                       {sIdx === c.segments.length - 1 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '60px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '54px' }}>
                           <div style={{
-                            width: '14px',
-                            height: '14px',
+                            width: '12px',
+                            height: '12px',
                             borderRadius: '50%',
-                            background: '#38bdf8',
-                            border: '3px solid #070d1e',
-                            boxShadow: '0 0 6px rgba(56, 189, 248, 0.8)'
+                            background: 'var(--signal-amber)',
+                            border: '2px solid #16242A'
                           }} />
-                          <span className="mono-text" style={{ fontSize: '0.72rem', fontWeight: '700', color: '#f8fafc', marginTop: '4px' }}>
+                          <span className="mono-text" style={{ fontSize: '0.68rem', fontWeight: '600', color: 'var(--text-primary)', marginTop: '4px' }}>
                             {seg.to_station}
                           </span>
                         </div>
@@ -397,6 +390,6 @@ export default function CongestionHeatmap({ segments, stations, corridors, onSel
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

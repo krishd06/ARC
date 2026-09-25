@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   AlertTriangle, CheckCircle2, Clock, ShieldAlert, 
-  Train, ArrowRight, Calendar, Sliders, Info, Zap
+  Train, Sliders, Info, Zap
 } from 'lucide-react';
 
 export default function ConflictChecker({ segments, prefill, onSelectSlotForRecommender }) {
@@ -32,8 +32,7 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
     }
   }, [segments, selectedTrackId]);
 
-  // Quick preset handlers
-  const applyPreset = (start, end, label) => {
+  const applyPreset = (start, end) => {
     setStartTime(start);
     setEndTime(end);
   };
@@ -72,7 +71,6 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
     }
   };
 
-  // Trigger initial check when segments load
   useEffect(() => {
     if (selectedTrackId) {
       handleCheck();
@@ -80,55 +78,52 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
   }, [selectedTrackId]);
 
   const selectedSegment = segments.find(s => s.track_id === selectedTrackId);
+  const isConflict = result && result.conflict_count > 0;
+  const isClear = result && result.verdict === 'CLEAR';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Top Banner / Explainer */}
-      <div className="glass-card" style={{ background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%)', border: '1px solid rgba(14, 165, 233, 0.3)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ShieldAlert size={22} color="#38bdf8" />
-              <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#f8fafc' }}>
-                Track Occupancy & Maintenance Conflict Engine
-              </h2>
-            </div>
-            <p style={{ color: '#94a3b8', fontSize: '0.88rem', marginTop: '6px', maxWidth: '850px' }}>
-              Cross-references the Indian Railways timetable (<code className="mono-text">train_routes.csv</code>) against physical chainage sections (<code className="mono-text">track_segments.csv</code>) to verify whether any express, passenger, or freight train occupies the track during the requested maintenance block.
-            </p>
-          </div>
+    <section className={`panel-conflict ${isConflict ? 'conflict-active' : ''} ${isClear ? 'clear-active' : ''}`}>
+      {/* Panel Header */}
+      <div className="panel-header">
+        <div className="panel-title">
+          <ShieldAlert size={20} color={isConflict ? 'var(--signal-red)' : 'var(--signal-amber)'} />
+          <span>Track occupancy and maintenance conflict engine</span>
+        </div>
+        <p className="panel-desc">
+          Cross-references scheduled timetable movements (<span className="mono-text">train_routes.csv</span>) against physical track chainages (<span className="mono-text">track_segments.csv</span>) to identify route overlaps, headways, and corridor clearance.
+        </p>
 
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            <button 
-              className="btn btn-secondary" 
-              style={{ fontSize: '0.78rem', padding: '6px 12px' }}
-              onClick={() => { setSelectedTrackId('T001'); applyPreset('07:10', '07:35'); }}
-            >
-              Demo Conflict (T001 @ 07:10)
-            </button>
-            <button 
-              className="btn btn-secondary" 
-              style={{ fontSize: '0.78rem', padding: '6px 12px' }}
-              onClick={() => { setSelectedTrackId('T001'); applyPreset('03:00', '05:00'); }}
-            >
-              Demo Safe Slot (T001 @ 03:00)
-            </button>
-          </div>
+        {/* Tactical Quick Presets */}
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
+          <button 
+            type="button"
+            className="btn btn-secondary btn-sm" 
+            onClick={() => { setSelectedTrackId('T001'); applyPreset('07:10', '07:35'); }}
+          >
+            Demo conflict: T001 at 07:10
+          </button>
+          <button 
+            type="button"
+            className="btn btn-secondary btn-sm" 
+            onClick={() => { setSelectedTrackId('T001'); applyPreset('03:00', '05:00'); }}
+          >
+            Demo safe window: T001 at 03:00
+          </button>
         </div>
       </div>
 
-      <div className="grid-2" style={{ gridTemplateColumns: '380px 1fr', alignItems: 'start' }}>
-        {/* Controls Card */}
-        <div className="glass-card">
-          <h3 style={{ fontSize: '1rem', fontWeight: '700', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sliders size={18} color="#38bdf8" />
-            Block Request Parameters
-          </h3>
+      <div className="panels-grid-dual" style={{ gridTemplateColumns: '360px 1fr', alignItems: 'start' }}>
+        {/* Controls Column */}
+        <div style={{ background: 'var(--bg-panel-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '16px' }}>
+          <div style={{ fontSize: '0.9rem', fontWeight: '700', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Sliders size={16} color="var(--signal-amber)" />
+            <span>Block request parameters</span>
+          </div>
 
-          <form onSubmit={handleCheck} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <form onSubmit={handleCheck} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             {/* Segment Selector */}
             <div className="form-group">
-              <label className="form-label">Track Segment</label>
+              <label className="form-label">Track segment</label>
               <select 
                 className="form-select"
                 value={selectedTrackId}
@@ -142,24 +137,24 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
               </select>
             </div>
 
-            {/* Segment Info Capsule */}
+            {/* Segment Specs Telemetry */}
             {selectedSegment && (
-              <div style={{ background: '#09132b', border: '1px solid #1e3264', borderRadius: '8px', padding: '10px 12px', fontSize: '0.8rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
-                  <span>Corridor:</span>
-                  <span style={{ color: '#f8fafc', fontWeight: '600' }}>{selectedSegment.corridor}</span>
+              <div style={{ background: 'var(--bg-panel-deep)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '10px 12px', fontSize: '0.78rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
+                  <span>Corridor</span>
+                  <span style={{ color: 'var(--text-primary)', fontWeight: '500' }}>{selectedSegment.corridor}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', color: '#94a3b8' }}>
-                  <span>Stations:</span>
-                  <span style={{ color: '#f8fafc' }}>{selectedSegment.from_station_name} to {selectedSegment.to_station_name}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', color: 'var(--text-muted)' }}>
+                  <span>Section</span>
+                  <span style={{ color: 'var(--text-primary)' }}>{selectedSegment.from_station_name} to {selectedSegment.to_station_name}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', color: '#94a3b8' }}>
-                  <span>Chainage / Speed:</span>
-                  <span style={{ color: '#f8fafc' }}>{selectedSegment.length_km} km • Max {selectedSegment.max_speed_kmph} km/h</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', color: 'var(--text-muted)' }}>
+                  <span>Chainage / Speed</span>
+                  <span className="mono-text" style={{ color: 'var(--text-primary)' }}>{selectedSegment.length_km} km • Max {selectedSegment.max_speed_kmph} km/h</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', color: '#94a3b8' }}>
-                  <span>Terrain:</span>
-                  <span className={`badge ${selectedSegment.terrain === 'ghat/hilly' ? 'badge-amber' : 'badge-green'}`} style={{ padding: '2px 6px', fontSize: '0.7rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', color: 'var(--text-muted)' }}>
+                  <span>Terrain</span>
+                  <span className={`badge ${selectedSegment.terrain === 'ghat/hilly' ? 'badge-amber' : 'badge-green'}`}>
                     {selectedSegment.terrain}
                   </span>
                 </div>
@@ -168,7 +163,7 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
 
             {/* Date */}
             <div className="form-group">
-              <label className="form-label">Target Maintenance Date</label>
+              <label className="form-label">Target maintenance date</label>
               <input 
                 type="date"
                 className="form-input"
@@ -178,9 +173,9 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
             </div>
 
             {/* Time Window */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div className="form-group">
-                <label className="form-label">Block Start (HH:MM)</label>
+                <label className="form-label">Block start (HH:MM)</label>
                 <input 
                   type="time"
                   className="form-input mono-text"
@@ -189,7 +184,7 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
                 />
               </div>
               <div className="form-group">
-                <label className="form-label">Block End (HH:MM)</label>
+                <label className="form-label">Block end (HH:MM)</label>
                 <input 
                   type="time"
                   className="form-input mono-text"
@@ -201,40 +196,37 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
 
             {/* Presets */}
             <div className="form-group">
-              <label className="form-label" style={{ fontSize: '0.72rem' }}>Quick Window Presets</label>
+              <label className="form-label">Standard operational windows</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 <button 
                   type="button" 
-                  className="badge badge-cyan" 
-                  style={{ cursor: 'pointer', border: 'none' }}
+                  className="btn btn-secondary btn-sm" 
                   onClick={() => applyPreset('01:30', '04:30')}
                 >
                   Night (01:30–04:30)
                 </button>
                 <button 
                   type="button" 
-                  className="badge badge-amber" 
-                  style={{ cursor: 'pointer', border: 'none' }}
+                  className="btn btn-secondary btn-sm" 
                   onClick={() => applyPreset('23:45', '02:45')}
                 >
-                  Overnight (23:45–02:45)
+                  Late night (23:45–02:45)
                 </button>
                 <button 
                   type="button" 
-                  className="badge badge-purple" 
-                  style={{ cursor: 'pointer', border: 'none' }}
+                  className="btn btn-secondary btn-sm" 
                   onClick={() => applyPreset('12:00', '14:30')}
                 >
-                  Midday (12:00–14:30)
+                  Midday dip (12:00–14:30)
                 </button>
               </div>
             </div>
 
-            {/* Safety Buffer */}
+            {/* Safety Clearance Buffer */}
             <div className="form-group">
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <label className="form-label">Safety Clearance Buffer</label>
-                <span className="mono-text" style={{ fontSize: '0.8rem', color: '#38bdf8' }}>{bufferMin} min</span>
+                <label className="form-label">Headway safety clearance buffer</label>
+                <span className="mono-text" style={{ fontSize: '0.8rem', color: 'var(--signal-amber)' }}>{bufferMin} min</span>
               </div>
               <input 
                 type="range"
@@ -243,21 +235,21 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
                 step="5"
                 value={bufferMin}
                 onChange={(e) => setBufferMin(e.target.value)}
-                style={{ accentColor: '#38bdf8' }}
+                style={{ accentColor: 'var(--signal-amber)' }}
               />
-              <span style={{ fontSize: '0.72rem', color: '#64748b' }}>
-                Adds pre/post margin around train arrival & departure events.
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                Enforces safety interval between train clearance and maintenance block entry.
               </span>
             </div>
 
-            {/* Submit */}
+            {/* Submit Button */}
             <button 
               type="submit" 
               className="btn btn-primary"
               disabled={loading}
-              style={{ marginTop: '8px', padding: '12px' }}
+              style={{ marginTop: '4px' }}
             >
-              {loading ? 'Evaluating Corridor...' : 'Run Conflict Check'}
+              {loading ? 'Evaluating timetable movements...' : 'Check track occupancy'}
             </button>
           </form>
         </div>
@@ -265,121 +257,121 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
         {/* Results Area */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {error && (
-            <div className="glass-card" style={{ border: '1px solid #ef4444', background: 'rgba(239, 68, 68, 0.1)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#f87171' }}>
-                <AlertTriangle size={20} />
-                <span>{error}</span>
-              </div>
+            <div style={{ border: '1px solid var(--signal-red-border)', background: 'var(--signal-red-bg)', padding: '12px 16px', borderRadius: '2px', color: '#e5736c', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <AlertTriangle size={18} />
+              <span>{error}</span>
             </div>
           )}
 
           {result && (
             <>
-              {/* Verdict Banner */}
+              {/* Verdict Indicator */}
               <div 
-                className="glass-card" 
                 style={{
-                  background: result.verdict === 'CLEAR' 
-                    ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(13, 23, 51, 0.8) 100%)'
-                    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(13, 23, 51, 0.8) 100%)',
-                  border: `2px solid ${result.verdict === 'CLEAR' ? '#10b981' : '#ef4444'}`,
-                  boxShadow: result.verdict === 'CLEAR' ? 'var(--shadow-glow-green)' : 'var(--shadow-glow-red)'
+                  background: isClear ? 'var(--signal-green-bg)' : 'var(--signal-red-bg)',
+                  border: `1px solid ${isClear ? 'var(--signal-green-border)' : 'var(--signal-red-border)'}`,
+                  borderLeft: `5px solid ${isClear ? 'var(--signal-green)' : 'var(--signal-red)'}`,
+                  borderRadius: '2px',
+                  padding: '16px 20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '16px'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{
-                      width: '54px',
-                      height: '54px',
-                      borderRadius: '12px',
-                      background: result.verdict === 'CLEAR' ? '#10b981' : '#ef4444',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      boxShadow: '0 4px 14px rgba(0,0,0,0.4)'
-                    }}>
-                      {result.verdict === 'CLEAR' ? <CheckCircle2 size={32} /> : <AlertTriangle size={32} />}
-                    </div>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <h3 style={{ fontSize: '1.4rem', fontWeight: '800', letterSpacing: '-0.3px', color: '#ffffff' }}>
-                          {result.verdict === 'CLEAR' ? 'CLEAR: NO CONFLICTS' : `CONFLICT DETECTED: ${result.conflict_count} TRAIN(S) AFFECTED`}
-                        </h3>
-                        <span className={`badge ${result.verdict === 'CLEAR' ? 'badge-green' : 'badge-red'}`}>
-                          {result.verdict}
-                        </span>
-                      </div>
-                      <p style={{ color: '#cbd5e1', fontSize: '0.88rem', marginTop: '4px' }}>
-                        {result.verdict === 'CLEAR' 
-                          ? `Proposed ${result.planned_duration_min}-minute block is safe to grant. No scheduled trains occupy this segment during this window.`
-                          : `Maintenance block overlaps with scheduled revenue trains. Immediate rescheduling or train path regulation required.`}
-                      </p>
-                    </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{
+                    width: '46px',
+                    height: '46px',
+                    borderRadius: '3px',
+                    background: isClear ? 'var(--signal-green)' : 'var(--signal-red)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#FFFFFF',
+                    flexShrink: 0
+                  }}>
+                    {isClear ? <CheckCircle2 size={28} color="#FFFFFF" /> : <AlertTriangle size={28} color="#FFFFFF" />}
                   </div>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-primary)' }}>
+                        {isClear ? 'Clear: No conflicts detected' : `Conflict detected: ${result.conflict_count} train(s) affected`}
+                      </h3>
+                      <span className={`badge ${isClear ? 'badge-green' : 'badge-red'}`}>
+                        {result.verdict}
+                      </span>
+                    </div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.84rem', marginTop: '4px' }}>
+                      {isClear 
+                        ? `Proposed ${result.planned_duration_min}-minute block is safe to grant. No scheduled trains occupy this section during this window.`
+                        : `Maintenance block conflicts with scheduled revenue trains. Operational regulation or rescheduling required before granting.`}
+                    </p>
+                  </div>
+                </div>
 
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '600' }}>
-                      Planned Window
-                    </div>
-                    <div className="mono-text" style={{ fontSize: '1.1rem', fontWeight: '700', color: '#38bdf8' }}>
-                      {result.start_time} → {result.end_time}
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                      Duration: {result.planned_duration_min} min ({Math.floor(result.planned_duration_min/60)}h {result.planned_duration_min%60}m)
-                    </div>
+                <div style={{ textAlign: 'left', minWidth: '150px' }}>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '600' }}>
+                    Requested window
+                  </div>
+                  <div className="mono-text" style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--signal-amber)' }}>
+                    {result.start_time} → {result.end_time}
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                    Duration: {result.planned_duration_min} min ({Math.floor(result.planned_duration_min/60)}h {result.planned_duration_min%60}m)
                   </div>
                 </div>
               </div>
 
               {/* Conflicting Trains Table */}
               {result.conflict_count > 0 && (
-                <div className="glass-card">
-                  <h4 style={{ fontSize: '1rem', fontWeight: '700', color: '#f87171', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <AlertTriangle size={18} />
-                    Directly Conflicting Train Services ({result.conflict_count})
-                  </h4>
+                <div style={{ background: 'var(--bg-panel-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '16px' }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--signal-red-text)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <AlertTriangle size={16} />
+                    <span>Directly conflicting train services ({result.conflict_count})</span>
+                  </div>
                   <div className="table-container">
                     <table className="data-table">
                       <thead>
                         <tr>
                           <th>Train #</th>
-                          <th>Train Name</th>
+                          <th>Train name</th>
                           <th>Type</th>
                           <th>Direction</th>
-                          <th>Segment Entry</th>
-                          <th>Segment Exit</th>
-                          <th>Direct Overlap</th>
-                          <th>Impact Status</th>
+                          <th>Entry</th>
+                          <th>Exit</th>
+                          <th>Overlap</th>
+                          <th>Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {result.conflicts.map((c, idx) => (
-                          <tr key={idx} style={{ background: 'rgba(239, 68, 68, 0.05)' }}>
-                            <td className="mono-text" style={{ fontWeight: '700', color: '#f87171' }}>
+                          <tr key={idx} style={{ background: 'var(--signal-red-bg)' }}>
+                            <td className="mono-text" style={{ fontWeight: '700', color: 'var(--signal-red-text)' }}>
                               {c.train_number}
                             </td>
-                            <td style={{ fontWeight: '600' }}>
+                            <td style={{ fontWeight: '500' }}>
                               {c.train_name}
                             </td>
                             <td>
-                              <span className="badge badge-cyan" style={{ fontSize: '0.7rem' }}>
+                              <span className="badge badge-slate">
                                 {c.train_type}
                               </span>
                             </td>
                             <td>
-                              <span className="badge badge-purple" style={{ fontSize: '0.7rem' }}>
-                                {c.direction} ({c.from_station} → {c.to_station})
+                              <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+                                {c.from_station} → {c.to_station}
                               </span>
                             </td>
                             <td className="mono-text">{c.scheduled_entry_time}</td>
                             <td className="mono-text">{c.scheduled_exit_time}</td>
-                            <td className="mono-text" style={{ color: '#ef4444', fontWeight: '700' }}>
+                            <td className="mono-text" style={{ color: 'var(--signal-red)', fontWeight: '700' }}>
                               {c.overlap_minutes} min
                             </td>
                             <td>
                               <span className="badge badge-red">
-                                {c.buffer_breach ? 'Buffer Breach' : 'Direct Occupancy'}
+                                {c.buffer_breach ? 'Buffer breach' : 'Direct occupancy'}
                               </span>
                             </td>
                           </tr>
@@ -390,44 +382,44 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
                 </div>
               )}
 
-              {/* Corridor Context Timeline */}
-              <div className="glass-card">
+              {/* Timeline Context Table */}
+              <div style={{ background: 'var(--bg-panel-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '2px', padding: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: '700', color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Clock size={16} color="#38bdf8" />
-                    Scheduled Trains Nearby Window (±12h Context)
-                  </h4>
-                  <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                    Total {result.timeline_context.length} train movements recorded on this segment
+                  <div style={{ fontSize: '0.88rem', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Clock size={16} color="var(--signal-amber)" />
+                    <span>Scheduled trains nearby window (±12h context)</span>
+                  </div>
+                  <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                    {result.timeline_context.length} movements recorded
                   </span>
                 </div>
 
                 {result.timeline_context.length === 0 ? (
-                  <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>No scheduled trains recorded in the immediate ±12h timeframe.</p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>No scheduled trains recorded in the immediate timeframe.</p>
                 ) : (
                   <div className="table-container">
                     <table className="data-table">
                       <thead>
                         <tr>
                           <th>Train #</th>
-                          <th>Train Name</th>
-                          <th>Direction</th>
-                          <th>Segment Entry</th>
-                          <th>Segment Exit</th>
-                          <th>Status relative to Proposed Block</th>
+                          <th>Train name</th>
+                          <th>Route</th>
+                          <th>Entry</th>
+                          <th>Exit</th>
+                          <th>Status relative to block</th>
                         </tr>
                       </thead>
                       <tbody>
                         {result.timeline_context.map((t, idx) => {
                           const isConf = t.is_conflict;
                           return (
-                            <tr key={idx} style={{ background: isConf ? 'rgba(239, 68, 68, 0.08)' : 'transparent' }}>
-                              <td className="mono-text" style={{ fontWeight: '600', color: isConf ? '#f87171' : '#38bdf8' }}>
+                            <tr key={idx} style={{ background: isConf ? 'var(--signal-red-bg)' : 'transparent' }}>
+                              <td className="mono-text" style={{ fontWeight: '600', color: isConf ? 'var(--signal-red-text)' : 'var(--text-primary)' }}>
                                 {t.train_number}
                               </td>
                               <td>{t.train_name}</td>
                               <td>
-                                <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                                   {t.from_station} → {t.to_station}
                                 </span>
                               </td>
@@ -452,6 +444,6 @@ export default function ConflictChecker({ segments, prefill, onSelectSlotForReco
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
