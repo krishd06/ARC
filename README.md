@@ -1,4 +1,4 @@
-# Rail Sentinel 🚆⚡
+# ARC 🚆⚡
 
 Rail Sentinel is an AI-powered automatic track maintenance block-planning decision-support system designed for Indian Railways, built for the Smart India Hackathon (SIH) using Central Railway's Maharashtra network as the pilot region. It automates the evaluation, discovery, and risk-scoring of track maintenance windows by cross-referencing timetable movements against physical segment chainages, allowing railway operations controllers to grant maintenance blocks safely without causing cascading train delays.
 
@@ -122,11 +122,4 @@ rail-sentinel/
 
 ---
 
-## 👥 Team
 
-- **[Team Member 1 Name]** — *Role / Specialty (e.g., Full Stack / Team Lead)*
-- **[Team Member 2 Name]** — *Role / Specialty (e.g., Backend & Algorithm Development)*
-- **[Team Member 3 Name]** — *Role / Specialty (e.g., Frontend & UI/UX Design)*
-- **[Team Member 4 Name]** — *Role / Specialty (e.g., Data Modeling & Domain Research)*
-- **[Team Member 5 Name]** — *Role / Specialty (e.g., Testing & Optimization)*
-- **[Team Member 6 Name]** — *Role / Specialty (e.g., Presentation & Documentation)*
